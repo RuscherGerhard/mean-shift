@@ -32,15 +32,15 @@ int main(int argc, char* argv[]){
     }
 
     std::cout << std::to_string(image.size().width)<< "/" << std::to_string(image.size().height) << std::endl;
-    //making new linear filter
 
-    LinearFilter* filter = new LinearFilter(image);
+    LinearFilter* filter = new LinearFilter(&image);
 
     // construct the window
-
     cv::namedWindow(argv[argIdx]);
 
     cv::imshow(argv[argIdx], image);
+
+     std::cout << "\n< < Press Key! > >" << std::endl;
 
     cv::waitKey(0);
 

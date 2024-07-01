@@ -1,44 +1,59 @@
 #include <string>
 #include "../headers/linear-filter.h"
+#include "../headers/roi-info-factory.h"
 
 
-LinearFilter::LinearFilter(cv::Mat workingCopyImg){
 
-    std::cout << "Constructed Filter!!!!" << std::endl;
+LinearFilter::LinearFilter(const cv::Mat* origImg){
 
-    filterFunction(&workingCopyImg);
+    cv::Mat* workingCopy = new cv::Mat(origImg->cols, origImg->rows, CV_8UC3, cv::Scalar(255,255,255));
+    
 
-    std::string windowName("FilterWindow ;)");
+    RoiInfo infoFact = RoiInfoFactory(origImg->cols, origImg->rows, origImg->channels()).create(0,origImg->rows, 0, origImg->cols-1);
+    filterFunction(origImg, workingCopy, infoFact);
 
-    std::cout << std::to_string(workingCopyImg.size().width)<< "/" << std::to_string(workingCopyImg.size().height) << std::endl;
 
-    // cv::namedWindow(windowName);
-    // cv::imshow(windowName, workingCopyImg);
+    // make show window
+    std::string windowName("Processed image ;)");
+    cv::namedWindow(windowName);
 
-    // cv::waitKey(0);
 
-    // cv::destroyWindow(windowName);
+    workingCopy->convertTo(*workingCopy, CV_8UC3);
+
+    // show processed image
+    cv::imshow(windowName, *workingCopy);
+    std::cout << "\n< Press Key! >" << std::endl;
+    cv::waitKey(0);
+
+    // destroy helper window
+    cv::destroyWindow(windowName);
 }
 LinearFilter::~LinearFilter(){}
 
-void LinearFilter::filterFunction(cv::Mat* img){
-    //TODO implement the filters!!!!
-    std::cout<<"fiterFunction Called" << std::endl;
-    const int height = img->rows;
-    const int width = img->cols;
+void LinearFilter::filterFunction(const cv::Mat* origImg, cv::Mat* workingCopy, RoiInfo info){
 
-    int cn = img->channels();
-    
+    const int height = origImg->rows;
+    const int width = origImg->cols;
+    int cn = origImg->channels();
+
+    std::cout << "cols : " << std::to_string(width) << " | rows : " << std::to_string(height) << " | channels : " << std::to_string(cn) << std::endl;
+
     long row = 0; // current row
-    for(u_long rowIdx = 0; rowIdx < img->rows; rowIdx++)
+    long count(0);
+    long cols = origImg->cols;
+    for(long rowIdx = 0; rowIdx < origImg->rows; rowIdx++)
     {
+        // row of the current pixel
+        long currentRow = rowIdx * origImg->cols * cn;
 
-        u_long currentRow = rowIdx*img->cols * cn;
-        for(u_long colIdx = 0; colIdx < img->cols; colIdx++){
-            u_long currentCol = colIdx * cn;
-            img->data[currentRow + currentCol+1] = 0;
-            img->data[currentRow + currentCol+2] = 0;
-            img->data[currentRow + currentCol+3] = 0; 
+        for(long colIdx = 0; colIdx < origImg->cols; colIdx++){
+
+            // col of the current pixel (the idx of the current pixel is currentRow + currentCol!)
+            long currentCol = colIdx*cn;
+
+            myMeanShift(origImg, workingCopy, currentRow, currentCol);
+
+            std::cout << "\r" << std::to_string(rowIdx) << " lines out of " << std::to_string(origImg->rows)<< " processed!" << std::flush;
         }
     }
 }
