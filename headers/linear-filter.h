@@ -23,6 +23,6 @@ class LinearFilter {
      * @param cv::Mat* workingCopy
      * @return void 
      */
-        virtual void filterFunction(const cv::Mat* origImg, cv::Mat* workingCopy, const RoiInfo info); 
+    void filterFunction(const cv::Mat* origImg, cv::Mat* workingCopy, const RoiInfo info, const unsigned char offset); 
     
 };

@@ -69,7 +69,7 @@ unsigned char applyMeanshift(
 
 
 // main meanshift function!
-void myMeanShift(const cv::Mat* origImg, cv::Mat* img, const long currentRow, const long currentCol){
+void myMeanShift(const cv::Mat* origImg, cv::Mat* img, const long currentRow, const long currentCol, const unsigned char offset){
         u_long Rad = 10;
         unsigned int lambda = 20;
 
@@ -85,7 +85,7 @@ void myMeanShift(const cv::Mat* origImg, cv::Mat* img, const long currentRow, co
             currentValueR = applyMeanshift(origImg, img, currentRow, currentCol, Rad, lambda, currentValueR,2);
         }
 
-        img->at<unsigned char>(currentRow + currentCol) = currentValueB;
-        img->at<unsigned char>(currentRow + currentCol+1) = currentValueG;
-        img->at<unsigned char>(currentRow + currentCol+2) = currentValueR;        
+        img->at<unsigned char>(currentRow + currentCol) = currentValueB + offset <= 255 ? currentValueB + offset : currentValueB;
+        img->at<unsigned char>(currentRow + currentCol+1) = currentValueG  + offset <= 255 ? currentValueG + offset : currentValueG;
+        img->at<unsigned char>(currentRow + currentCol+2) = currentValueR + offset <= 255 ? currentValueR + offset : currentValueR;        
 }
