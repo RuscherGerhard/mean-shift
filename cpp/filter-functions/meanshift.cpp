@@ -69,15 +69,15 @@ unsigned char applyMeanshift(
 
 
 // main meanshift function!
-void myMeanShift(const cv::Mat* origImg, cv::Mat* img, const long currentRow, const long currentCol, const unsigned char offset){
-        u_long Rad = 10;
+void myMeanShift(const cv::Mat* origImg, cv::Mat* img, const long currentRow, const long currentCol){
+        u_long Rad = 5;
         unsigned int lambda = 20;
 
         unsigned char currentValueB = origImg->at<unsigned char> (currentRow + currentCol);
         unsigned char currentValueG = origImg->at<unsigned char> (currentRow + currentCol + 1);
         unsigned char currentValueR = origImg->at<unsigned char> (currentRow + currentCol + 2);
  
-        // apply the kernel on the values in the window and populate the vector!
+        // converge to the densest point in the cluster!!!()
         for(int i = 0; i < 10; i++)
         {
             currentValueB = applyMeanshift(origImg, img, currentRow, currentCol, Rad, lambda, currentValueB);
@@ -85,7 +85,7 @@ void myMeanShift(const cv::Mat* origImg, cv::Mat* img, const long currentRow, co
             currentValueR = applyMeanshift(origImg, img, currentRow, currentCol, Rad, lambda, currentValueR,2);
         }
 
-        img->at<unsigned char>(currentRow + currentCol) = currentValueB + offset <= 255 ? currentValueB + offset : currentValueB;
-        img->at<unsigned char>(currentRow + currentCol+1) = currentValueG  + offset <= 255 ? currentValueG + offset : currentValueG;
-        img->at<unsigned char>(currentRow + currentCol+2) = currentValueR + offset <= 255 ? currentValueR + offset : currentValueR;        
+        img->at<unsigned char>(currentRow + currentCol)   = currentValueB;
+        img->at<unsigned char>(currentRow + currentCol+1) = currentValueG;
+        img->at<unsigned char>(currentRow + currentCol+2) = currentValueR;        
 }

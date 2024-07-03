@@ -41,7 +41,7 @@ bool RoiInfoFactory::sanityChecks(const unsigned long end_row, const unsigned lo
     if(result)
     {
         std::cout <<"ERROR --BAD PARAMS-- :\n"<< "rows : " << std::to_string(this->rows) << " | cols : " << std::to_string(this->cols) << "\n"
-        << " | end_row : " << std::to_string(end_row) << " | end_cols : " << std::to_string(end_col) << std::endl;
+        << " | end_row : " << std::to_string(end_row) << " | end_cols : " << std::to_string(end_col) << " << END ERROR >> \n ----- \n"<< std::endl;
     }
     return result;
 }
