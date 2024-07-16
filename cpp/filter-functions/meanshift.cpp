@@ -6,14 +6,6 @@
 
 const float onePercentOfChar = 255.0f/100.f;
 
-// unsigned char toUChar(const auto toConvert, const auto maxValue){
-
-//     float percentage = toConvert / maxValue;
-
-//     return static_cast<unsigned char> (  onePercentOfChar * percentage);//255/100 could be theoretically done at start up ;) 
-
-// }
-
 unsigned int flatKernel(const int x1, const int x2,const unsigned int lambda){
     // return 1 if the diff between x1 and x2 is small enough!
     return abs(x1-x2) <= lambda ? 1 : 0;
@@ -39,17 +31,23 @@ unsigned char applyMeanshift(
         int kernelSum(0);
         int kernelResult(0);
         
+        // calculate init row and col for the window
+        u_long initRow = (currentRow > (Rad + 1) * rowSize) ? currentRow - (Rad + 1) * rowSize : 0; 
+        u_long initCol = (currentCol > (Rad + 1) * cn)      ? currentCol - (Rad + 1) * cn      : 0;
+
         // row loop
-        for(long rowOS = currentRow - (Rad + 1) * rowSize; rowOS  <= currentRow + Rad * rowSize; rowOS = rowOS + rowSize){
+        for(u_long rowOS = initRow; rowOS <= currentRow + Rad * rowSize; rowOS = rowOS + rowSize){
 
-            if(rowOS < 0 || rowOS > rowSize * origImg->rows)
+            if(rowOS > rowSize * origImg->rows)
             {
-                continue;
+                break;
             }
-            for(long col = currentCol - (Rad * cn); col < currentCol + (Rad * cn); col = col + 3){
 
-                if(col < 0 || col > rowSize ){
-                    continue;
+           
+            for( u_long col = initCol; col < currentCol + (Rad * cn); col = col + 3){
+
+                if(col > rowSize ){
+                    break;
                 }
 
                 u_long idx = rowOS + col + offset;
@@ -59,8 +57,6 @@ unsigned char applyMeanshift(
                 kernelResult = kernelResult + origImg->at<unsigned char>(idx) * kernelValue;
 
                 kernelSum = kernelSum + kernelValue;
-                // img->at<u_char>(rowOS+col+offset) = origImg->at<u_char>(rowOS+col+offset);
-
             }
         }
         
