@@ -31,7 +31,7 @@ unsigned char applyMeanshift(
         int kernelSum(0);
         int kernelResult(0);
         
-        // calculate init row and col for the window
+        // calculate init row and col for the window(we loop from the upper left to the lower right of the Filter Window, so the init position in the image will be the upper right position of the window)
         u_long initRow = (currentRow > (Rad + 1) * rowSize) ? currentRow - (Rad + 1) * rowSize : 0; 
         u_long initCol = (currentCol > (Rad + 1) * cn)      ? currentCol - (Rad + 1) * cn      : 0;
 
@@ -43,7 +43,7 @@ unsigned char applyMeanshift(
                 break;
             }
 
-           
+            // col loop!   
             for( u_long col = initCol; col < currentCol + (Rad * cn); col = col + 3){
 
                 if(col > rowSize ){
@@ -74,14 +74,17 @@ void myMeanShift(const cv::Mat* origImg, cv::Mat* img, const long currentRow, co
         unsigned char currentValueR = origImg->at<unsigned char> (currentRow + currentCol + 2);
  
         // converge to the densest point in the cluster!!!()
-        for(int i = 0; i < 10; i++)
+        for(int i = 0; i < 20; i++)
         {
             currentValueB = applyMeanshift(origImg, img, currentRow, currentCol, Rad, lambda, currentValueB);
             currentValueG = applyMeanshift(origImg, img, currentRow, currentCol, Rad, lambda, currentValueG,1);
             currentValueR = applyMeanshift(origImg, img, currentRow, currentCol, Rad, lambda, currentValueR,2);
-        }
+
+
+        
 
         img->at<unsigned char>(currentRow + currentCol)   = currentValueB;
         img->at<unsigned char>(currentRow + currentCol+1) = currentValueG;
         img->at<unsigned char>(currentRow + currentCol+2) = currentValueR;        
+        }
 }
