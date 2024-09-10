@@ -52,9 +52,20 @@ unsigned char applyMeanshift(
 
                 u_long idx = rowOS + col + offset;
 
-                unsigned int kernelValue = flatKernel(origImg->at<unsigned char>(idx), currentColorVal, lambda);
-
-                kernelResult = kernelResult + origImg->at<unsigned char>(idx) * kernelValue;
+                unsigned int kernelValue = 0;
+                if(rowOS == currentRow && col == currentCol){
+                    // iff we are at the current pixel, for what we want to compute the mean shift, then
+                    kernelValue = 1; // for this case, automatically the Kernel Value is 1, see flat kernel def!
+                    
+                    kernelResult = kernelResult + currentColorVal * kernelValue;
+                }
+                else{
+                    // else business as usual!
+                    // see iff we take that value into the calc or not(flat kernel).
+                    kernelValue = flatKernel(origImg->at<unsigned char>(idx), currentColorVal, lambda);
+                    // calc the kernelResult!
+                    kernelResult = kernelResult + origImg->at<unsigned char>(idx) * kernelValue;
+                }
 
                 kernelSum = kernelSum + kernelValue;
             }
@@ -80,11 +91,9 @@ void myMeanShift(const cv::Mat* origImg, cv::Mat* img, const long currentRow, co
             currentValueG = applyMeanshift(origImg, img, currentRow, currentCol, Rad, lambda, currentValueG,1);
             currentValueR = applyMeanshift(origImg, img, currentRow, currentCol, Rad, lambda, currentValueR,2);
 
-
-        
+        }
 
         img->at<unsigned char>(currentRow + currentCol)   = currentValueB;
         img->at<unsigned char>(currentRow + currentCol+1) = currentValueG;
         img->at<unsigned char>(currentRow + currentCol+2) = currentValueR;        
-        }
 }

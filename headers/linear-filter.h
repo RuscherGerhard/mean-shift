@@ -11,7 +11,7 @@ struct RoiInfo;
 class LinearFilter {
     public:
     // C-Tor 
-        LinearFilter(const cv::Mat* workingCopyImg, const size_t threadAmmount);
+        LinearFilter(const cv::Mat* origImg, const size_t threadAmmount);
     // D-Tor
         ~LinearFilter();
 

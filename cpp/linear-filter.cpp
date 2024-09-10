@@ -38,6 +38,8 @@ void LinearFilter::filterFunction(const cv::Mat* origImg, cv::Mat* workingCopy, 
     long row = 0; // current row
     long count(0);
     long cols = origImg->cols;
+
+    // cv::Mat* scndWorkingCopy = new cv::Mat() 
     for(long rowIdx = info.start_row; rowIdx <= info.end_row; rowIdx++)
     {
         processedLines++;
