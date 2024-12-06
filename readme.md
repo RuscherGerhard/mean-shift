@@ -11,3 +11,5 @@ Made under  osX sonoma. This little app comes as is. No Waranty for any errors!
 5. cd <build/dir> and run make to build
 6. usage: "./meanshift <path/to/image> [threadammount]"
     threadammount is optional and is number from 1-29
+
+Disclaimer: The code comes as is, I give no warranty of correctness and am not responsible for any outcome of usage what so ever, error malfuncions etc..
